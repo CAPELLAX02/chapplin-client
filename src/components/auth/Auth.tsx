@@ -19,8 +19,7 @@ const Auth = ({ submitLabel, onSubmit, children, error }: AuthProps) => {
         height: '100vh',
         maxWidth: {
           xs: '70%',
-          s: '60%',
-          md: '35%',
+          md: '30%',
         },
         margin: '0 auto',
         justifyContent: 'center',
@@ -31,7 +30,7 @@ const Auth = ({ submitLabel, onSubmit, children, error }: AuthProps) => {
         label="Email"
         variant="outlined"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={(event) => setEmail(event.target.value)}
         error={!!error}
         helperText={error}
       />
@@ -40,9 +39,9 @@ const Auth = ({ submitLabel, onSubmit, children, error }: AuthProps) => {
         label="Password"
         variant="outlined"
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
         error={!!error}
         helperText={error}
+        onChange={(event) => setPassword(event.target.value)}
       />
       <Button variant="contained" onClick={() => onSubmit({ email, password })}>
         {submitLabel}
