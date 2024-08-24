@@ -10,12 +10,11 @@ const Branding = () => {
         variant="h6"
         noWrap
         component="a"
-        onClick={() => router.navigate('/')}
         sx={{
           mr: 2,
           display: { xs: 'none', md: 'flex' },
           fontFamily: 'monospace',
-          cursor: 'pointer',
+          cursor: 'default',
           fontWeight: 700,
           letterSpacing: '.3rem',
           color: 'inherit',
