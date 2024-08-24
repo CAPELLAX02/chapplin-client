@@ -33,14 +33,16 @@ const App = () => {
         <Header />
         <Guard>
           {showChatList ? (
-            <Grid container>
-              <Grid item md={3}>
-                <ChatList />
+            <Container>
+              <Grid container>
+                <Grid item md={3}>
+                  <ChatList />
+                </Grid>
+                <Grid item md={9}>
+                  <Routes />
+                </Grid>
               </Grid>
-              <Grid item md={9}>
-                <Routes />
-              </Grid>
-            </Grid>
+            </Container>
           ) : (
             <Routes />
           )}

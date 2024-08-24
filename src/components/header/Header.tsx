@@ -32,7 +32,12 @@ const Header = () => {
   const authenticated = useReactiveVar(authenticatedVar);
 
   return (
-    <AppBar position="static">
+    <AppBar
+      position="static"
+      sx={{
+        backgroundColor: 'navy',
+      }}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Branding />

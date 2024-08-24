@@ -36,6 +36,7 @@ const Auth = ({ submitLabel, onSubmit, children, error }: AuthProps) => {
       }}
     >
       <TextField
+        color="success"
         type="email"
         label="Email"
         variant="outlined"
@@ -45,6 +46,7 @@ const Auth = ({ submitLabel, onSubmit, children, error }: AuthProps) => {
         helperText={error}
       />
       <TextField
+        color="success"
         type="password"
         label="Password"
         variant="outlined"
@@ -53,7 +55,11 @@ const Auth = ({ submitLabel, onSubmit, children, error }: AuthProps) => {
         helperText={error}
         onChange={(event) => setPassword(event.target.value)}
       />
-      <Button variant="contained" onClick={() => onSubmit({ email, password })}>
+      <Button
+        style={{ backgroundColor: 'green', color: 'white', fontWeight: 'bold' }}
+        variant="contained"
+        onClick={() => onSubmit({ email, password })}
+      >
         {submitLabel}
       </Button>
       {children}

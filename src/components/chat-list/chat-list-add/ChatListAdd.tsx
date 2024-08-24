@@ -102,7 +102,15 @@ const ChatListAdd = ({ open, handleClose }: ChatListAddProps) => {
               helperText={error}
             />
           )}
-          <Button variant="contained" onClick={handleClick}>
+          <Button
+            variant="contained"
+            style={{
+              backgroundColor: 'green',
+              color: 'white',
+              fontWeight: 'bold',
+            }}
+            onClick={handleClick}
+          >
             Save
           </Button>
         </Stack>

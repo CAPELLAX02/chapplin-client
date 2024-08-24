@@ -30,12 +30,12 @@ const Chat = () => {
         />
         <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
         <IconButton
-          color="primary"
+          color="success"
           sx={{
             p: '10px',
           }}
         >
-          <SendIcon />
+          <SendIcon color="success" />
         </IconButton>
       </Paper>
     </Stack>

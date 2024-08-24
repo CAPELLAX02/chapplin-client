@@ -14,7 +14,7 @@ const Signup = () => {
 
   return (
     <Auth
-      submitLabel="Signup"
+      submitLabel="Sign up"
       error={error}
       onSubmit={async ({ email, password }) => {
         try {
@@ -39,7 +39,11 @@ const Signup = () => {
       }}
     >
       <Link to={'/login'} style={{ alignSelf: 'center' }}>
-        <MUILink>Login</MUILink>
+        <MUILink
+          style={{ color: 'lightgreen', textDecorationColor: 'lightgreen' }}
+        >
+          Login
+        </MUILink>
       </Link>
     </Auth>
   );
