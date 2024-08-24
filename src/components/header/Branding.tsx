@@ -1,6 +1,5 @@
 import { Typography } from '@mui/material';
 import ForumIcon from '@mui/icons-material/Forum';
-import router from '../Routes';
 
 const Branding = () => {
   return (
