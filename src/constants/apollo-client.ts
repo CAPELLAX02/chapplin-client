@@ -3,6 +3,7 @@ import { onError } from '@apollo/client/link/error';
 import { API_URL } from './urls';
 import excludedRoutes from './excluded-routes';
 import router from '../components/Routes';
+import { onLogout } from '../utils/logout';
 
 const logoutLink = onError(({ graphQLErrors }) => {
   if (
@@ -11,8 +12,7 @@ const logoutLink = onError(({ graphQLErrors }) => {
     (graphQLErrors[0].extensions?.originalError as any)?.statusCode === 401
   ) {
     if (!excludedRoutes.includes(window.location.pathname)) {
-      router.navigate('/login');
-      client.clearStore(); // veya client.resetStore();
+      onLogout();
     }
   }
 });
