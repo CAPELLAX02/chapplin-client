@@ -2,10 +2,21 @@ import { useParams } from 'react-router-dom';
 import { useGetChat } from '../../hooks/useGetChat';
 import { Divider, IconButton, InputBase, Paper, Stack } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import { useCreateMessage } from '../../hooks/useCreateMessage';
+import { useState } from 'react';
 
 const Chat = () => {
   const params = useParams();
-  const { data } = useGetChat({ _id: params._id || '' });
+  const [message, setMessage] = useState('');
+  const chatId = params._id || '';
+  const { data } = useGetChat({ _id: chatId });
+  const [createMessage] = useCreateMessage();
+
+  const handleSendMessage = () => {
+    createMessage({
+      variables: { createMessageInput: { content: message, chatId } },
+    });
+  };
 
   return (
     <Stack
@@ -25,11 +36,14 @@ const Chat = () => {
         }}
       >
         <InputBase
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           sx={{ ml: 1, flex: 1, width: '100%' }}
           placeholder="Your message"
         />
         <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
         <IconButton
+          onClick={handleSendMessage}
           color="success"
           sx={{
             p: '10px',
