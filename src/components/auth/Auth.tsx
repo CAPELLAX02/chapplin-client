@@ -8,9 +8,10 @@ interface AuthProps {
   onSubmit: (credentials: { email: string; password: string }) => Promise<void>;
   children: React.ReactNode;
   error?: string;
+  title: string;
 }
 
-const Auth = ({ submitLabel, onSubmit, children, error }: AuthProps) => {
+const Auth = ({ submitLabel, onSubmit, children, error, title }: AuthProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { data } = useGetMe();
@@ -32,6 +33,7 @@ const Auth = ({ submitLabel, onSubmit, children, error }: AuthProps) => {
         justifyContent: 'center',
       }}
     >
+      <h2 style={{ textAlign: 'center', color: 'lightgray' }}>{title}</h2>
       <TextField
         color="success"
         type="email"

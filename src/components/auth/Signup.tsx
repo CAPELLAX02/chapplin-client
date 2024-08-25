@@ -14,6 +14,7 @@ const Signup = () => {
 
   return (
     <Auth
+      title="Join Us!"
       submitLabel="Sign up"
       error={error}
       onSubmit={async ({ email, password }) => {

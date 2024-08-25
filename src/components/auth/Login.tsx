@@ -9,6 +9,7 @@ const Login = () => {
   return (
     <>
       <Auth
+        title="Welcome Back!"
         submitLabel="Login"
         onSubmit={(request) => login(request)}
         error={error}
