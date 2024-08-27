@@ -15,47 +15,25 @@ import SendIcon from '@mui/icons-material/Send';
 import { useCreateMessage } from '../../hooks/useCreateMessage';
 import { useEffect, useRef, useState } from 'react';
 import { useGetMessages } from '../../hooks/useGetMessages';
-import { useMessageCreated } from '../../hooks/useMessageCreated';
-import { Message } from '../../gql/graphql';
 
 const Chat = () => {
   const params = useParams();
   const [message, setMessage] = useState('');
-  const chatId = params._id || '';
+  const chatId = params._id!;
   const { data } = useGetChat({ _id: chatId });
   const [createMessage] = useCreateMessage();
-  const { data: existingMessages } = useGetMessages({ chatId });
-  const [messages, setMessages] = useState<Message[]>([]);
+  const { data: messages } = useGetMessages({ chatId });
   const divRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
-  const { data: latestMessage } = useMessageCreated({ chatId });
 
-  const scrollToBottom = () => {
-    divRef.current?.scrollIntoView();
-  };
-
-  useEffect(() => {
-    if (existingMessages) {
-      setMessages(existingMessages.messages);
-    }
-  }, [existingMessages]);
-
-  useEffect(() => {
-    const existingLatestMessage = messages[messages.length - 1]?._id;
-    if (
-      latestMessage?.messageCreated &&
-      existingLatestMessage !== latestMessage.messageCreated._id
-    ) {
-      setMessages([...messages, latestMessage.messageCreated]);
-    }
-  }, [latestMessage, messages]);
+  const scrollToBottom = () => divRef.current?.scrollIntoView();
 
   useEffect(() => {
     setMessage('');
     scrollToBottom();
-  }, [location, messages]);
+  }, [location.pathname, messages]);
 
-  const handleSendMessage = async () => {
+  const handleCreateMessage = async () => {
     await createMessage({
       variables: { createMessageInput: { content: message, chatId } },
     });
@@ -64,42 +42,38 @@ const Chat = () => {
   };
 
   return (
-    <Stack
-      sx={{
-        height: '100%',
-        justifyContent: 'space-between',
-      }}
-    >
+    <Stack sx={{ height: '100%', justifyContent: 'space-between' }}>
       <h1>{data?.chat.name}</h1>
-      <Box sx={{ maxHeight: '70vh', minHeight: '70vh', overflow: 'auto' }}>
-        {[...messages]
-          .sort(
-            (messageA, messageB) =>
-              new Date(messageA.createdAt).getTime() -
-              new Date(messageB.createdAt).getTime()
-          )
-          .map((message) => (
-            <Grid container alignItems="center" marginBottom="1rem">
-              <Grid item xs={2} md={1}>
-                <Avatar src="" sx={{ width: 50, height: 50 }} />
-              </Grid>
-              <Grid item xs={10} md={11}>
-                <Stack>
-                  <Paper sx={{ width: 'fit-content' }}>
-                    <Typography sx={{ padding: '0.9rem' }}>
-                      {message.content}
+      <Box sx={{ maxHeight: '70vh', overflow: 'auto' }}>
+        {messages &&
+          [...messages.messages]
+            .sort(
+              (messageA, messageB) =>
+                new Date(messageA.createdAt).getTime() -
+                new Date(messageB.createdAt).getTime()
+            )
+            .map((message) => (
+              <Grid container alignItems="center" marginBottom="1rem">
+                <Grid item xs={2} lg={1}>
+                  <Avatar src="" sx={{ width: 52, height: 52 }} />
+                </Grid>
+                <Grid item xs={10} lg={11}>
+                  <Stack>
+                    <Paper sx={{ width: 'fit-content' }}>
+                      <Typography sx={{ padding: '0.9rem' }}>
+                        {message.content}
+                      </Typography>
+                    </Paper>
+                    <Typography
+                      variant="caption"
+                      sx={{ marginLeft: '0.25rem' }}
+                    >
+                      {new Date(message.createdAt).toLocaleTimeString()}
                     </Typography>
-                  </Paper>
-                  <Typography variant="caption" sx={{ marginLeft: '0.25rem' }}>
-                    {/* {new Date(message.createdAt).toLocaleTimeString()} */}
-                    {new Date(message.createdAt)
-                      .toLocaleTimeString()
-                      .slice(0, 5)}
-                  </Typography>
-                </Stack>
+                  </Stack>
+                </Grid>
               </Grid>
-            </Grid>
-          ))}
+            ))}
         <div ref={divRef}></div>
       </Box>
       <Paper
@@ -113,25 +87,23 @@ const Chat = () => {
         }}
       >
         <InputBase
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
           sx={{ ml: 1, flex: 1, width: '100%' }}
-          placeholder="Your message"
-          onKeyDown={(event) => {
+          onChange={(event) => setMessage(event.target.value)}
+          value={message}
+          placeholder="Message"
+          onKeyDown={async (event) => {
             if (event.key === 'Enter') {
-              handleSendMessage();
+              await handleCreateMessage();
             }
           }}
         />
         <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
         <IconButton
-          onClick={handleSendMessage}
-          color="success"
-          sx={{
-            p: '10px',
-          }}
+          onClick={handleCreateMessage}
+          color="primary"
+          sx={{ p: '10px' }}
         >
-          <SendIcon color="success" />
+          <SendIcon />
         </IconButton>
       </Paper>
     </Stack>
