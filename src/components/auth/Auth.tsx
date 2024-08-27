@@ -1,5 +1,5 @@
 import { Button, Stack, TextField } from '@mui/material';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useGetMe } from '../../hooks/useGetMe';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,9 +9,17 @@ interface AuthProps {
   children: React.ReactNode;
   error?: string;
   title: string;
+  extraFields?: React.ReactNode[];
 }
 
-const Auth = ({ submitLabel, onSubmit, children, error, title }: AuthProps) => {
+const Auth = ({
+  submitLabel,
+  onSubmit,
+  children,
+  error,
+  title,
+  extraFields,
+}: AuthProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { data } = useGetMe();
@@ -44,6 +52,7 @@ const Auth = ({ submitLabel, onSubmit, children, error, title }: AuthProps) => {
         error={!!error}
         helperText={error}
       />
+      {extraFields}
       <TextField
         color="success"
         type="password"
