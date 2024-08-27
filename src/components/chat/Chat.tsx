@@ -34,6 +34,10 @@ const Chat = () => {
   }, [location.pathname, messages]);
 
   const handleCreateMessage = async () => {
+    if (message.trim() === '') {
+      setMessage('');
+      return;
+    }
     await createMessage({
       variables: { createMessageInput: { content: message, chatId } },
     });
