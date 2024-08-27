@@ -8,7 +8,6 @@ import { createClient } from 'graphql-ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { Kind, OperationDefinitionNode } from 'graphql';
 
-// Error handling link to log out user on 401 errors
 const logoutLink = onError(({ graphQLErrors }) => {
   if (
     graphQLErrors &&
@@ -21,17 +20,14 @@ const logoutLink = onError(({ graphQLErrors }) => {
   }
 });
 
-// HTTP link for queries and mutations
 const httpLink = new HttpLink({ uri: `${API_URL}/graphql` });
 
-// WebSocket link for subscriptions
 const webSocketLink = new GraphQLWsLink(
   createClient({
     url: `ws://${WEBSOCKET_URL}/graphql`,
   })
 );
 
-// Split link to use WebSocket for subscriptions and HTTP for other operations
 const splitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query);
@@ -44,10 +40,26 @@ const splitLink = split(
   httpLink
 );
 
-// Initialize Apollo Client with combined link and in-memory cache
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  link: logoutLink.concat(splitLink), // Combine error handling and split links
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          chats: {
+            keyArgs: false,
+            merge(existingChats, incomingChats, { args }: any) {
+              const merged = existingChats ? existingChats.slice(0) : [];
+              for (let i = 0; i < incomingChats.length; ++i) {
+                merged[args.skip + i] = incomingChats[i];
+              }
+              return merged;
+            },
+          },
+        },
+      },
+    },
+  }),
+  link: logoutLink.concat(splitLink),
 });
 
 export default client;

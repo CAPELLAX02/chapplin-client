@@ -44,7 +44,7 @@ const Chat = () => {
   return (
     <Stack sx={{ height: '100%', justifyContent: 'space-between' }}>
       <h1>{data?.chat.name}</h1>
-      <Box sx={{ maxHeight: '70vh', overflow: 'auto' }}>
+      <Box sx={{ height: '70vh', overflow: 'auto' }}>
         {messages &&
           [...messages.messages]
             .sort(
@@ -83,7 +83,6 @@ const Chat = () => {
           justifySelf: 'flex-end',
           alignItems: 'center',
           width: '100%',
-          margin: '1rem 0',
         }}
       >
         <InputBase
