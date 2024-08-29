@@ -1,18 +1,17 @@
 import { ApolloClient, HttpLink, InMemoryCache, split } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { API_URL, WEBSOCKET_URL } from './urls';
 import excludedRoutes from './excluded-routes';
 import { onLogout } from '../utils/logout';
-import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
 import { getMainDefinition } from '@apollo/client/utilities';
-import { Kind, OperationDefinitionNode } from 'graphql';
 
-const logoutLink = onError(({ graphQLErrors }) => {
+const logoutLink = onError((error) => {
   if (
-    graphQLErrors &&
-    graphQLErrors[0] &&
-    (graphQLErrors[0].extensions?.originalError as any)?.statusCode === 401
+    error.graphQLErrors?.length &&
+    (error.graphQLErrors[0].extensions?.originalError as any)?.statusCode ===
+      401
   ) {
     if (!excludedRoutes.includes(window.location.pathname)) {
       onLogout();
@@ -22,7 +21,7 @@ const logoutLink = onError(({ graphQLErrors }) => {
 
 const httpLink = new HttpLink({ uri: `${API_URL}/graphql` });
 
-const webSocketLink = new GraphQLWsLink(
+const wsLink = new GraphQLWsLink(
   createClient({
     url: `ws://${WEBSOCKET_URL}/graphql`,
   })
@@ -32,11 +31,11 @@ const splitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query);
     return (
-      definition.kind === Kind.OPERATION_DEFINITION &&
-      (definition as OperationDefinitionNode).operation === 'subscription'
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
     );
   },
-  webSocketLink,
+  wsLink,
   httpLink
 );
 
@@ -47,13 +46,11 @@ const client = new ApolloClient({
         fields: {
           chats: {
             keyArgs: false,
-            merge(existingChats, incomingChats, { args }: any) {
-              const merged = existingChats ? existingChats.slice(0) : [];
-              for (let i = 0; i < incomingChats.length; ++i) {
-                merged[args.skip + i] = incomingChats[i];
-              }
-              return merged;
-            },
+            merge,
+          },
+          messages: {
+            keyArgs: ['chatId'],
+            merge,
           },
         },
       },
@@ -61,5 +58,13 @@ const client = new ApolloClient({
   }),
   link: logoutLink.concat(splitLink),
 });
+
+function merge(existing: any, incoming: any, { args }: any) {
+  const merged = existing ? existing.slice(0) : [];
+  for (let i = 0; i < incoming.length; ++i) {
+    merged[args.skip + i] = incoming[i];
+  }
+  return merged;
+}
 
 export default client;
