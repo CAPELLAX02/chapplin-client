@@ -24,6 +24,8 @@ const ChatListItem = ({ chat, selected }: ChatListProps) => {
         >
           <ListItemAvatar>
             <Avatar alt="Remy Sharp" src="/static/iamages/avatar/1.jpg" />
+            {/* Replace below after AWS set up. */}
+            {/* <Avatar alt="Remy Sharp" src={chat.latestMessage?.user.imageUrl} /> */}
           </ListItemAvatar>
           <ListItemText
             primary={chat.name}

@@ -87,7 +87,18 @@ const Chat = () => {
                   key={message._id}
                 >
                   <Grid item xs={2} lg={1}>
-                    <Avatar src="" sx={{ width: 52, height: 52 }} />
+                    <Stack
+                      alignItems="center"
+                      justifyContent="center"
+                      spacing={1}
+                    >
+                      <Avatar src="" sx={{ width: 52, height: 52 }} />
+                      {/* Replace the imageUrl source as below after configuring AWS connections, configurations and permissions. */}
+                      {/* <Avatar src={message.user.imageUrl} sx={{ width: 52, height: 52 }} /> */}
+                      <Typography variant="caption">
+                        {message.user.username}
+                      </Typography>
+                    </Stack>
                   </Grid>
                   <Grid item xs={10} lg={11}>
                     <Stack>
